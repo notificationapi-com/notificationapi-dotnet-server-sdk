@@ -21,5 +21,3 @@ dotnet test
 ```
 
 100% code coverage required.
-
-100% code coverage required.
