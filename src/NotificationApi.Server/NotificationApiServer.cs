@@ -1,0 +1,122 @@
+﻿using NotificationApi.Server.Models;
+using NotificationApi.Server.Utilities;
+
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Json;
+using System.Text;
+
+namespace NotificationApi.Server;
+
+/// <summary>
+/// Represents a server for the Notification API.
+/// </summary>
+public class NotificationApiServer
+{
+    private readonly string clientId;
+    private readonly string clientSecret;
+    private readonly bool secureMode;
+    private readonly HttpClient httpClient;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotificationApiServer"/> class.
+    /// </summary>
+    /// <param name="clientId">The client ID.</param>
+    /// <param name="clientSecret">The client secret.</param>
+    /// <param name="secureMode">Indicates whether secure mode is enabled.</param>
+    /// <param name="baseAddress">The base address of the API.</param>
+    [ExcludeFromCodeCoverage]
+    public NotificationApiServer(string clientId, string clientSecret, bool secureMode, string baseAddress = "https://api.notificationapi.com") : this(new HttpClient(), clientId, clientSecret, secureMode, baseAddress)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotificationApiServer"/> class.
+    /// </summary>
+    /// <param name="httpClient">The HTTP client.</param>
+    /// <param name="clientId">The client ID.</param>
+    /// <param name="clientSecret">The client secret.</param>
+    /// <param name="secureMode">Indicates whether secure mode is enabled.</param>
+    /// <param name="baseAddress">The base address of the API.</param>
+    public NotificationApiServer(HttpClient httpClient, string clientId, string clientSecret, bool secureMode, string baseAddress = "https://api.notificationapi.com")
+    {
+        string authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"));
+
+        httpClient.BaseAddress = new Uri(new Uri(baseAddress), $"{clientId}/");
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {authToken}");
+
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.secureMode = secureMode;
+        this.httpClient = httpClient;
+    }
+
+    /// <summary>
+    /// Sends a notification.
+    /// </summary>
+    /// <param name="sendNotificationData">The data for sending the notification.</param>
+    /// <returns>The HTTP response message.</returns>
+    public async Task<HttpResponseMessage> Send(SendNotificationData sendNotificationData)
+    {
+        return await httpClient.PostAsJsonAsync("sender", sendNotificationData, Configuration.JsonSerializerOptions);
+    }
+
+    /// <summary>
+    /// Retracts a notification.
+    /// </summary>
+    /// <param name="retractNotificationData">The data for retracting the notification.</param>
+    /// <returns>The HTTP response message.</returns>
+    public async Task<HttpResponseMessage> Retract(RetractNotificationData retractNotificationData)
+    {
+        return await httpClient.PostAsJsonAsync("sender/retract", retractNotificationData, Configuration.JsonSerializerOptions);
+    }
+
+    /// <summary>
+    /// Identifies a user.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="identifyUserData">The data for identifying the user.</param>
+    /// <returns>The HTTP response message.</returns>
+    public async Task<HttpResponseMessage> Identify(string userId, IdentifyUserData identifyUserData)
+    {
+        string authToken;
+
+        if (secureMode)
+        {
+            string hashedUserId = UserIdHasher.Hash(userId, clientSecret);
+            authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{userId}:{hashedUserId}"));
+        }
+        else
+        {
+            authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{userId}"));
+        }
+
+        HttpRequestMessage request = new(HttpMethod.Post, $"users/{userId}")
+        {
+            Content = JsonContent.Create(identifyUserData, options: Configuration.JsonSerializerOptions),
+        };
+
+        request.Headers.Add("Authorization", $"Basic {authToken}");
+
+        string json = System.Text.Json.JsonSerializer.Serialize(identifyUserData, Configuration.JsonSerializerOptions);
+        Trace.WriteLine(json);
+
+        return await httpClient.SendAsync(request);
+    }
+
+    /// <summary>
+    /// Sets user preferences.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="setUserPreferencesData">The data for setting user preferences.</param>
+    /// <returns>The HTTP response message.</returns>
+    public async Task<HttpResponseMessage> SetUserPreferences(string userId, SetUserPreferencesData setUserPreferencesData)
+    {
+        return await httpClient.PostAsJsonAsync($"user_preferences/{userId}", setUserPreferencesData.Preferences, Configuration.JsonSerializerOptions);
+    }
+
+    // TODO: Create CreateSubNotification method
+    // TODO: Create DeleteSubNotification method
+    // TODO: Create UpdateSchedule method
+    // TODO: Create DeleteSchedule method
+}
