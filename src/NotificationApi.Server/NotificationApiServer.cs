@@ -115,8 +115,19 @@ public class NotificationApiServer
         return await httpClient.PostAsJsonAsync($"user_preferences/{userId}", setUserPreferencesData.Preferences, Configuration.JsonSerializerOptions);
     }
 
+    public async Task<HttpResponseMessage> UpdateSchedule(string trackingId, UpdateScheduleData updateScheduleData)
+    {
+        string json = System.Text.Json.JsonSerializer.Serialize(updateScheduleData, Configuration.JsonSerializerOptions);
+        Trace.WriteLine(json);
+
+        return await httpClient.PutAsJsonAsync($"schedule/{trackingId}", updateScheduleData, Configuration.JsonSerializerOptions);
+    }
+
+    public async Task<HttpResponseMessage> DeleteSchedule(string trackingId)
+    {
+        return await httpClient.DeleteAsync($"schedule/{trackingId}");
+    }
+
     // TODO: Create CreateSubNotification method
     // TODO: Create DeleteSubNotification method
-    // TODO: Create UpdateSchedule method
-    // TODO: Create DeleteSchedule method
 }

@@ -292,4 +292,56 @@ public class NotificationApiServerTests
         // Assert
         Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
     }
+
+    [TestMethod]
+    public async Task UpdateSchedule_ValidData_ReturnsHttpResponseMessage()
+    {
+        // Arrange
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = false;
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        _ = mockHttp.Expect(HttpMethod.Put, $"https://api.notificationapi.com/{clientId}/schedule/testTrackingId")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+            .WithContent("""{"schedule":"2024-03-16T14:36:30Z"}""")
+            .Respond(HttpStatusCode.OK);
+
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
+
+        UpdateScheduleData updateScheduleData = new UpdateScheduleData()
+        {
+            Schedule = DateTime.FromFileTimeUtc(133550733900000000)
+        };
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.UpdateSchedule("testTrackingId", updateScheduleData);
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
+
+    [TestMethod]
+    public async Task DeleteSchedule_ValidData_ReturnsHttpResponseMessage()
+    {
+        // Arrange
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = false;
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        _ = mockHttp.Expect(HttpMethod.Delete, $"https://api.notificationapi.com/{clientId}/schedule/testTrackingId")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+            .Respond(HttpStatusCode.OK);
+
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.DeleteSchedule("testTrackingId");
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
 }
