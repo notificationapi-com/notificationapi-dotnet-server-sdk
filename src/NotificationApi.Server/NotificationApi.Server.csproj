@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="E:\StoneRedSoftware\Repos\notificationapi-dotnet-server-sdk\src\NotificationApi.Server\Models\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="E:\StoneRedSoftware\Repos\notificationapi-dotnet-server-sdk\src\NotificationApi.Server\Models\.editorconfig" />
+  </ItemGroup>
+
+</Project>

@@ -8,6 +8,16 @@ Please refer to our [documentations](https://docs.notificationapi.com).
 
 # Contribution
 
-TODO
+Install dependencies:
+
+```
+dotnet restore
+```
+
+Run tests:
+
+```
+dotnet test
+```
 
 100% code coverage required.
