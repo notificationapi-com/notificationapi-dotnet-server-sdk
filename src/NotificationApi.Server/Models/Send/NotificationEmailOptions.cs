@@ -21,6 +21,16 @@ public class NotificationEmailOptions
     public string[]? BccAddresses { get; set; }
 
     /// <summary>
+    /// Gets or sets the From name of an email.
+    /// </summary>
+    public string? FromName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the From Address of an email.
+    /// </summary>
+    public string? FromAddress { get; set; }
+
+    /// <summary>
     /// Gets or sets the attachments for the email.
     /// </summary>
     public NotificationEmailAttachments[]? Attachments { get; set; }
