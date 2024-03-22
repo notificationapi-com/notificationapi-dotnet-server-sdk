@@ -4,6 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>NotificationAPI</PackageId>
+    <Version>0.1.0</Version>
+    <RepositoryUrl>https://github.com/notificationapi-com/notificationapi-dotnet-server-sdk</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>NotificationAPI .NET Server SDK</Description>
+    <PackageProjectUrl>https://github.com/notificationapi-com/notificationapi-dotnet-server-sdk</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +20,13 @@
 
   <ItemGroup>
     <None Include="E:\StoneRedSoftware\Repos\notificationapi-dotnet-server-sdk\src\NotificationApi.Server\Models\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="..\..\README.md">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+      </None>
   </ItemGroup>
 
 </Project>
