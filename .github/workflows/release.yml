@@ -1,0 +1,28 @@
+name: Upload nuget package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x" # SDK Version to use.
+          source-url: https://nuget.pkg.github.com/NotificationAPI/index.json
+        env:
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+      - run: dotnet build --configuration Release src/NotificationApi.Server
+      - name: Create the package
+        run: dotnet pack --configuration Release src/NotificationApi.Server
+      - name: Publish the package to nuget.org
+        run: dotnet nuget push src/NotificationApi.Server/bin/Release/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+        env:
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
