@@ -18,11 +18,11 @@ jobs:
           dotnet-version: "8.0.x" # SDK Version to use.
           source-url: https://nuget.pkg.github.com/NotificationAPI/index.json
         env:
-          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
       - run: dotnet build --configuration Release src/NotificationApi.Server
       - name: Create the package
         run: dotnet pack --configuration Release src/NotificationApi.Server
       - name: Publish the package to nuget.org
-        run: dotnet nuget push src/NotificationApi.Server/bin/Release/*.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push src/NotificationApi.Server/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
         env:
-          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
