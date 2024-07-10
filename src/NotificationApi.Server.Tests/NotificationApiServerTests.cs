@@ -344,4 +344,55 @@ public class NotificationApiServerTests
         // Assert
         Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
     }
+
+
+[TestMethod]
+public async Task QueryLogs_ValidData_ReturnsHttpResponseMessage()
+{
+    // Arrange
+    const string clientId = "testClientId";
+    const string clientSecret = "testClientSecret";
+    const bool secureMode = false;
+
+    var filters = new Dictionary<string, object>
+    {
+        { "dateRangeFilter", new Dictionary<string, long> { { "startTime", 1719600830559 }, { "endTime", 1719600840559 } } },
+        { "notificationFilter", new List<string> { "order_tracking" } },
+        { "channelFilter", new List<string> { "EMAIL" } },
+        { "userFilter", new List<string> { "abcd-1234" } },
+        { "statusFilter", new List<string> { "SUCCESS" } },
+        { "trackingIds", new List<string> { "172cf2f4-18cd-4f1f-b2ac-e50c7d71891c" } },
+        { "requestFilter", new List<string> { @"request.mergeTags.item=""Krabby Patty Burger""" } },
+        { "envIdFilter", new List<string> { "6ok6imq9unr2budgiebjdaa6oi" } }
+    };
+
+    var queryLogsData = new QueryLogsData
+    {
+        DateRangeFilter = filters["dateRangeFilter"] as Dictionary<string, long>,
+        NotificationFilter = filters["notificationFilter"] as List<string>,
+        ChannelFilter = filters["channelFilter"] as List<string>,
+        UserFilter = filters["userFilter"] as List<string>,
+        StatusFilter = filters["statusFilter"] as List<string>,
+        TrackingIds = filters["trackingIds"] as List<string>,
+        RequestFilter = filters["requestFilter"] as List<string>,
+        EnvIdFilter = filters["envIdFilter"] as List<string>
+    };
+
+    MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+    _ = mockHttp.Expect(HttpMethod.Post, $"https://api.notificationapi.com/{clientId}/logs/query")
+        .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+        .WithContent(JsonConvert.SerializeObject(queryLogsData))
+        .Respond(HttpStatusCode.OK);
+
+    NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
+
+    // Act
+    HttpResponseMessage response = await notificationApiServer.QueryLogs(queryLogsData);
+
+    // Assert
+    Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+}
+
+
 }
