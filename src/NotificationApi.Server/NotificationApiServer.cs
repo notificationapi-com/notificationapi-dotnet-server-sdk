@@ -131,7 +131,7 @@ public class NotificationApiServer
     /// <summary>
     ///  create a query on logs.
     /// </summary>
-    /// <param name="QueryLogsData">The data for query logs.</param>
+    /// <param name="queryLogsData">The data for query logs.</param>
     /// <returns>The HTTP response message.</returns>
     public async Task<HttpResponseMessage> QueryLogs(QueryLogsData queryLogsData)
     {
