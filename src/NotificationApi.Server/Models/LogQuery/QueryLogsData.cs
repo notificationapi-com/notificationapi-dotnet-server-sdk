@@ -18,7 +18,7 @@ namespace NotificationApi.Server.Models
         /// <summary>
         /// Gets or sets the channel filter.
         /// </summary>
-        public List<Channels>? ChannelFilter { get; set; }
+        public List<NotificationChannel>? ChannelFilter { get; set; }
 
         /// <summary>
         /// Gets or sets the user filter.
@@ -72,18 +72,5 @@ namespace NotificationApi.Server.Models
         /// Gets or sets the end time of the date range filter as a Unix timestamp.
         /// </summary>
         public long? EndTime { get; set; }
-    }
-
-    /// <summary>
-    /// Represents the different channels available for filtering logs.
-    /// </summary>
-    public enum Channels
-    {
-        EMAIL,
-        INAPP_WEB,
-        SMS,
-        CALL,
-        PUSH,
-        WEB_PUSH,
     }
 }
