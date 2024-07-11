@@ -5,6 +5,7 @@ using RichardSzalay.MockHttp;
 
 using System.Net;
 using System.Text;
+using System.Text.Json; 
 
 namespace NotificationApi.Server.Tests;
 
@@ -344,4 +345,47 @@ public class NotificationApiServerTests
         // Assert
         Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
     }
-}
+
+
+    [TestMethod]
+    public async Task QueryLogs_ValidData_ReturnsHttpResponseMessage()
+    {
+        // Arrange
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = false;
+
+        var dateRangeFilter = new DateRangeFilter
+        {
+            StartTime = 1719600830559,
+            EndTime = 1719600840559
+        };
+
+        var queryLogsData = new QueryLogsData
+        {
+            DateRangeFilter = dateRangeFilter,
+            NotificationFilter = new List<string> { "order_tracking" },
+            ChannelFilter = new List<NotificationChannel> { NotificationChannel.EMAIL },
+            UserFilter = new List<string> { "abcd-1234" },
+            StatusFilter = new List<string> { "SUCCESS" },
+            TrackingIds = new List<string> { "172cf2f4-18cd-4f1f-b2ac-e50c7d71891c" },
+            RequestFilter = new List<string> { @"request.mergeTags.item=""Krabby Patty Burger""" },
+            EnvIdFilter = new List<string> { "6ok6imq9unr2budgiebjdaa6oi" }
+        };
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        _ = mockHttp.Expect(HttpMethod.Post, $"https://api.notificationapi.com/{clientId}/logs/query")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+            .WithContent(JsonSerializer.Serialize(queryLogsData))
+            .Respond(HttpStatusCode.OK);
+
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.QueryLogs(queryLogsData);
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
+} 

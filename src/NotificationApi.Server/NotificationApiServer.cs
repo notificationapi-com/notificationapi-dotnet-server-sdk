@@ -128,6 +128,15 @@ public class NotificationApiServer
         return await httpClient.DeleteAsync($"schedule/{trackingId}");
     }
 
+    /// <summary>
+    ///  create a query on logs.
+    /// </summary>
+    /// <param name="queryLogsData">The data for query logs.</param>
+    /// <returns>The HTTP response message.</returns>
+    public async Task<HttpResponseMessage> QueryLogs(QueryLogsData queryLogsData)
+    {
+        return await httpClient.PostAsJsonAsync("logs/query", queryLogsData, Configuration.JsonSerializerOptions);
+    }
     // TODO: Create CreateSubNotification method
     // TODO: Create DeleteSubNotification method
 }
