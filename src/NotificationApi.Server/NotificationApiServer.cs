@@ -115,6 +115,39 @@ public class NotificationApiServer
         return await httpClient.PostAsJsonAsync($"user_preferences/{userId}", setUserPreferencesData.Preferences, Configuration.JsonSerializerOptions);
     }
 
+    /// <summary>
+    /// Updates an in-app notification.
+    /// </summary>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="updateData">The data for updating the in-app notification.</param>
+    /// <returns>The HTTP response message.</returns>
+    public async Task<HttpResponseMessage> UpdateInAppNotification(string userId, InAppNotificationPatchData updateData)
+    {
+        string authToken;
+
+        if (secureMode)
+        {
+            string hashedUserId = UserIdHasher.Hash(userId, clientSecret);
+            authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{userId}:{hashedUserId}"));
+        }
+        else
+        {
+            authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{userId}"));
+        }
+
+        HttpRequestMessage request = new(HttpMethod.Patch, $"users/{userId}/notifications/INAPP_WEB")
+        {
+            Content = JsonContent.Create(updateData, options: Configuration.JsonSerializerOptions),
+        };
+
+        request.Headers.Add("Authorization", $"Basic {authToken}");
+
+        string json = System.Text.Json.JsonSerializer.Serialize(updateData, Configuration.JsonSerializerOptions);
+        Trace.WriteLine(json);
+
+        return await httpClient.SendAsync(request);
+    }
+
     public async Task<HttpResponseMessage> UpdateSchedule(string trackingId, UpdateScheduleData updateScheduleData)
     {
         string json = System.Text.Json.JsonSerializer.Serialize(updateScheduleData, Configuration.JsonSerializerOptions);
