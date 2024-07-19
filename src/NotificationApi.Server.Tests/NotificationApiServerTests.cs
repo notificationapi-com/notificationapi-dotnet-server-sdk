@@ -5,7 +5,7 @@ using RichardSzalay.MockHttp;
 
 using System.Net;
 using System.Text;
-using System.Text.Json; 
+using System.Text.Json;
 
 namespace NotificationApi.Server.Tests;
 
@@ -154,11 +154,11 @@ public class NotificationApiServerTests
                     Device = new()
                     {
                          DeviceId = "testDeviceId",
-                          AdId = "testAdId",
-                           AppId = "testAppId",
-                            Manufacturer = "testManufacturer",
-                             Model = "testModel",
-                               Platform = "testPlatform"
+                         AdId = "testAdId",
+                         AppId = "testAppId",
+                         Manufacturer = "testManufacturer",
+                         Model = "testModel",
+                         Platform = "testPlatform"
                     },
                     Token = "testToken",
                     Type = NotificationPushProviders.FCM
@@ -217,11 +217,11 @@ public class NotificationApiServerTests
                     Device = new()
                     {
                          DeviceId = "testDeviceId",
-                          AdId = "testAdId",
-                           AppId = "testAppId",
-                            Manufacturer = "testManufacturer",
-                             Model = "testModel",
-                               Platform = "testPlatform"
+                         AdId = "testAdId",
+                         AppId = "testAppId",
+                         Manufacturer = "testManufacturer",
+                         Model = "testModel",
+                         Platform = "testPlatform"
                     },
                     Token = "testToken",
                     Type = NotificationPushProviders.FCM
@@ -388,4 +388,36 @@ public class NotificationApiServerTests
         // Assert
         Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
     }
-} 
+
+    [TestMethod]
+    public async Task UpdateInAppNotification_ValidData_ReturnsHttpResponseMessage()
+    {
+        // Arrange
+        const string userId = "testUserId";
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = true;
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        _ = mockHttp.Expect(HttpMethod.Patch, $"https://api.notificationapi.com/{clientId}/users/{userId}/notifications/INAPP_WEB")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{userId}:{UserIdHasher.Hash(userId, clientSecret)}"))}")
+            .WithContent("""{"trackingIds":["testTrackingId"],"opened":"2024-03-16T14:36:30Z","clicked":"2024-03-16T15:00:00Z"}""")
+            .Respond(HttpStatusCode.OK);
+
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
+
+        InAppNotificationPatchData inAppNotificationPatchData = new InAppNotificationPatchData()
+        {
+            TrackingIds = new List<string> { "testTrackingId" },
+            Opened = "2024-03-16T14:36:30Z",
+            Clicked = "2024-03-16T15:00:00Z"
+        };
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.UpdateInAppNotification(userId, inAppNotificationPatchData);
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
+}
