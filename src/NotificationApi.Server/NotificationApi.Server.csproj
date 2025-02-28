@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>NotificationAPI</PackageId>
-    <Version>1.0.0</Version>
+    <Version>0.5.0</Version>
     <RepositoryUrl>https://github.com/notificationapi-com/notificationapi-dotnet-server-sdk</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>NotificationAPI .NET Server SDK</Description>
