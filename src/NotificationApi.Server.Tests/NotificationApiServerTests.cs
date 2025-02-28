@@ -77,8 +77,8 @@ public class NotificationApiServerTests
                     [
                         new()
                         {
-                            FileName = "testFilename",
-                            Url = "https://test.com"
+                           FileName = "testFilename",
+                           Url = "https://test.com"
                         }
                     ]
                 }
@@ -151,12 +151,12 @@ public class NotificationApiServerTests
                 {
                     Device = new()
                     {
-                         DeviceId = "testDeviceId",
-                         AdId = "testAdId",
-                         AppId = "testAppId",
-                         Manufacturer = "testManufacturer",
-                         Model = "testModel",
-                         Platform = "testPlatform"
+                        DeviceId = "testDeviceId",
+                        AdId = "testAdId",
+                        AppId = "testAppId",
+                        Manufacturer = "testManufacturer",
+                        Model = "testModel",
+                        Platform = "testPlatform"
                     },
                     Token = "testToken",
                     Type = NotificationPushProviders.FCM
@@ -171,8 +171,8 @@ public class NotificationApiServerTests
                         Endpoint = "testEndpoint",
                         Keys = new()
                         {
-                            Auth = "testAuth",
-                            P256dh = "testP256dh"
+                           Auth = "testAuth",
+                           P256dh = "testP256dh"
                         }
                     }
                 }
@@ -214,12 +214,12 @@ public class NotificationApiServerTests
                 {
                     Device = new()
                     {
-                         DeviceId = "testDeviceId",
-                         AdId = "testAdId",
-                         AppId = "testAppId",
-                         Manufacturer = "testManufacturer",
-                         Model = "testModel",
-                         Platform = "testPlatform"
+                        DeviceId = "testDeviceId",
+                        AdId = "testAdId",
+                        AppId = "testAppId",
+                        Manufacturer = "testManufacturer",
+                        Model = "testModel",
+                        Platform = "testPlatform"
                     },
                     Token = "testToken",
                     Type = NotificationPushProviders.FCM
@@ -234,8 +234,8 @@ public class NotificationApiServerTests
                         Endpoint = "testEndpoint",
                         Keys = new()
                         {
-                            Auth = "testAuth",
-                            P256dh = "testP256dh"
+                           Auth = "testAuth",
+                           P256dh = "testP256dh"
                         }
                     }
                 }
@@ -272,15 +272,15 @@ public class NotificationApiServerTests
             [
                 new NotificationPreference()
                 {
-                     Channel = NotificationChannel.EMAIL,
-                     State = true,
-                     NotificationId = "testNotificationId"
+                    Channel = NotificationChannel.EMAIL,
+                    State = true,
+                    NotificationId = "testNotificationId"
                 },
                 new NotificationPreference()
                 {
-                     Channel = NotificationChannel.SMS,
-                     State = false,
-                     NotificationId = "testNotificationId"
+                    Channel = NotificationChannel.SMS,
+                    State = false,
+                    NotificationId = "testNotificationId"
                 }
             ]
         };
