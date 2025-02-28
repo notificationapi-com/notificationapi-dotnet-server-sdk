@@ -1,10 +1,9 @@
-﻿using NotificationApi.Server.Models;
-using NotificationApi.Server.Utilities;
-
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using System.Text;
+using NotificationApi.Server.Models;
+using NotificationApi.Server.Utilities;
 
 namespace NotificationApi.Server;
 
