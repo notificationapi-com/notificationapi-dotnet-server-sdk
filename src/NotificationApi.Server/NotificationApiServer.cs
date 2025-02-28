@@ -17,12 +17,12 @@ public class NotificationApiServer
     /// The default base URL for the US region.
     /// </summary>
     public const string US_BASE_URL = "https://api.notificationapi.com";
-    
+
     /// <summary>
     /// The base URL for the EU region.
     /// </summary>
     public const string EU_BASE_URL = "https://api.eu.notificationapi.com";
-    
+
     /// <summary>
     /// The base URL for the CA region.
     /// </summary>
