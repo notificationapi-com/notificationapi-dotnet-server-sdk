@@ -1,9 +1,11 @@
+using NotificationApi.Server.Models;
+using NotificationApi.Server.Utilities;
+
+using RichardSzalay.MockHttp;
+
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using NotificationApi.Server.Models;
-using NotificationApi.Server.Utilities;
-using RichardSzalay.MockHttp;
 
 namespace NotificationApi.Server.Tests;
 

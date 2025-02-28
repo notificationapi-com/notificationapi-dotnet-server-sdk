@@ -1,5 +1,6 @@
-using System.Text.Json;
 using NotificationApi.Server.Utilities;
+
+using System.Text.Json;
 
 namespace NotificationApi.Server.Tests.Utilities;
 
