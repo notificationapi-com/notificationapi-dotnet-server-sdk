@@ -79,8 +79,8 @@ public class NotificationApiServerTests
                     [
                         new()
                         {
-                           FileName = "testFilename",
-                           Url = "https://test.com"
+                            FileName = "testFilename",
+                            Url = "https://test.com"
                         }
                     ]
                 }
@@ -173,8 +173,8 @@ public class NotificationApiServerTests
                         Endpoint = "testEndpoint",
                         Keys = new()
                         {
-                           Auth = "testAuth",
-                           P256dh = "testP256dh"
+                            Auth = "testAuth",
+                            P256dh = "testP256dh"
                         }
                     }
                 }
@@ -236,8 +236,8 @@ public class NotificationApiServerTests
                         Endpoint = "testEndpoint",
                         Keys = new()
                         {
-                           Auth = "testAuth",
-                           P256dh = "testP256dh"
+                            Auth = "testAuth",
+                            P256dh = "testP256dh"
                         }
                     }
                 }
