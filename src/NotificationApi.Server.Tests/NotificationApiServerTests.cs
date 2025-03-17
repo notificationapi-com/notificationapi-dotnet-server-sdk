@@ -153,12 +153,12 @@ public class NotificationApiServerTests
                 {
                     Device = new()
                     {
-                         DeviceId = "testDeviceId",
-                         AdId = "testAdId",
-                         AppId = "testAppId",
-                         Manufacturer = "testManufacturer",
-                         Model = "testModel",
-                         Platform = "testPlatform"
+                        DeviceId = "testDeviceId",
+                        AdId = "testAdId",
+                        AppId = "testAppId",
+                        Manufacturer = "testManufacturer",
+                        Model = "testModel",
+                        Platform = "testPlatform"
                     },
                     Token = "testToken",
                     Type = NotificationPushProviders.FCM
@@ -216,12 +216,12 @@ public class NotificationApiServerTests
                 {
                     Device = new()
                     {
-                         DeviceId = "testDeviceId",
-                         AdId = "testAdId",
-                         AppId = "testAppId",
-                         Manufacturer = "testManufacturer",
-                         Model = "testModel",
-                         Platform = "testPlatform"
+                        DeviceId = "testDeviceId",
+                        AdId = "testAdId",
+                        AppId = "testAppId",
+                        Manufacturer = "testManufacturer",
+                        Model = "testModel",
+                        Platform = "testPlatform"
                     },
                     Token = "testToken",
                     Type = NotificationPushProviders.FCM
@@ -274,15 +274,15 @@ public class NotificationApiServerTests
             [
                 new NotificationPreference()
                 {
-                     Channel = NotificationChannel.EMAIL,
-                     State = true,
-                     NotificationId = "testNotificationId"
+                    Channel = NotificationChannel.EMAIL,
+                    State = true,
+                    NotificationId = "testNotificationId"
                 },
                 new NotificationPreference()
                 {
-                     Channel = NotificationChannel.SMS,
-                     State = false,
-                     NotificationId = "testNotificationId"
+                    Channel = NotificationChannel.SMS,
+                    State = false,
+                    NotificationId = "testNotificationId"
                 }
             ]
         };
@@ -375,9 +375,12 @@ public class NotificationApiServerTests
 
         MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
 
+        // Use the same serialization settings that the SDK uses
+        string expectedJson = JsonSerializer.Serialize(queryLogsData, Configuration.JsonSerializerOptions);
+
         _ = mockHttp.Expect(HttpMethod.Post, $"https://api.notificationapi.com/{clientId}/logs/query")
             .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
-            .WithContent(JsonSerializer.Serialize(queryLogsData))
+            .WithContent(expectedJson)
             .Respond(HttpStatusCode.OK);
 
         NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
@@ -416,6 +419,104 @@ public class NotificationApiServerTests
 
         // Act
         HttpResponseMessage response = await notificationApiServer.UpdateInAppNotification(userId, inAppNotificationPatchData);
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
+
+    [TestMethod]
+    public async Task Send_WithEURegion_UsesCorrectBaseUrl()
+    {
+        // Arrange
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = false;
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        _ = mockHttp.Expect(HttpMethod.Post, $"https://api.eu.notificationapi.com/{clientId}/sender")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+            .Respond(HttpStatusCode.OK);
+
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode, NotificationApiServer.EU_BASE_URL);
+
+        SendNotificationData sendNotificationData = new SendNotificationData()
+        {
+            NotificationId = "testNotificationId",
+            User = new()
+            {
+                Id = "testUserId"
+            }
+        };
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.Send(sendNotificationData);
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
+
+    [TestMethod]
+    public async Task Send_WithCARegion_UsesCorrectBaseUrl()
+    {
+        // Arrange
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = false;
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        _ = mockHttp.Expect(HttpMethod.Post, $"https://api.ca.notificationapi.com/{clientId}/sender")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+            .Respond(HttpStatusCode.OK);
+
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode, NotificationApiServer.CA_BASE_URL);
+
+        SendNotificationData sendNotificationData = new SendNotificationData()
+        {
+            NotificationId = "testNotificationId",
+            User = new()
+            {
+                Id = "testUserId"
+            }
+        };
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.Send(sendNotificationData);
+
+        // Assert
+        Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");
+    }
+
+    [TestMethod]
+    public async Task Send_WithDefaultRegion_UsesUSBaseUrl()
+    {
+        // Arrange
+        const string clientId = "testClientId";
+        const string clientSecret = "testClientSecret";
+        const bool secureMode = false;
+
+        MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+
+        // Explicitly check that it's using the US base URL when no region is specified
+        _ = mockHttp.Expect(HttpMethod.Post, $"https://api.notificationapi.com/{clientId}/sender")
+            .WithHeaders("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"))}")
+            .Respond(HttpStatusCode.OK);
+
+        // Don't specify a baseAddress parameter, so it should use the default
+        NotificationApiServer notificationApiServer = new NotificationApiServer(mockHttp.ToHttpClient(), clientId, clientSecret, secureMode);
+
+        SendNotificationData sendNotificationData = new SendNotificationData()
+        {
+            NotificationId = "testNotificationId",
+            User = new()
+            {
+                Id = "testUserId"
+            }
+        };
+
+        // Act
+        HttpResponseMessage response = await notificationApiServer.Send(sendNotificationData);
 
         // Assert
         Assert.IsTrue(response.IsSuccessStatusCode, "Should be success status code");

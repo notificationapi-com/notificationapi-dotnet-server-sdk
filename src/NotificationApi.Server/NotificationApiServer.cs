@@ -1,4 +1,4 @@
-﻿using NotificationApi.Server.Models;
+using NotificationApi.Server.Models;
 using NotificationApi.Server.Utilities;
 
 using System.Diagnostics;
@@ -13,6 +13,21 @@ namespace NotificationApi.Server;
 /// </summary>
 public class NotificationApiServer
 {
+    /// <summary>
+    /// The default base URL for the US region.
+    /// </summary>
+    public const string US_BASE_URL = "https://api.notificationapi.com";
+
+    /// <summary>
+    /// The base URL for the EU region.
+    /// </summary>
+    public const string EU_BASE_URL = "https://api.eu.notificationapi.com";
+
+    /// <summary>
+    /// The base URL for the CA region.
+    /// </summary>
+    public const string CA_BASE_URL = "https://api.ca.notificationapi.com";
+
     private readonly string clientId;
     private readonly string clientSecret;
     private readonly bool secureMode;
@@ -24,9 +39,9 @@ public class NotificationApiServer
     /// <param name="clientId">The client ID.</param>
     /// <param name="clientSecret">The client secret.</param>
     /// <param name="secureMode">Indicates whether secure mode is enabled.</param>
-    /// <param name="baseAddress">The base address of the API.</param>
+    /// <param name="baseAddress">The base address of the API. Use the predefined constants US_BASE_URL, EU_BASE_URL, or CA_BASE_URL.</param>
     [ExcludeFromCodeCoverage]
-    public NotificationApiServer(string clientId, string clientSecret, bool secureMode, string baseAddress = "https://api.notificationapi.com") : this(new HttpClient(), clientId, clientSecret, secureMode, baseAddress)
+    public NotificationApiServer(string clientId, string clientSecret, bool secureMode, string baseAddress = US_BASE_URL) : this(new HttpClient(), clientId, clientSecret, secureMode, baseAddress)
     {
     }
 
@@ -37,8 +52,8 @@ public class NotificationApiServer
     /// <param name="clientId">The client ID.</param>
     /// <param name="clientSecret">The client secret.</param>
     /// <param name="secureMode">Indicates whether secure mode is enabled.</param>
-    /// <param name="baseAddress">The base address of the API.</param>
-    public NotificationApiServer(HttpClient httpClient, string clientId, string clientSecret, bool secureMode, string baseAddress = "https://api.notificationapi.com")
+    /// <param name="baseAddress">The base address of the API. Use the predefined constants US_BASE_URL, EU_BASE_URL, or CA_BASE_URL.</param>
+    public NotificationApiServer(HttpClient httpClient, string clientId, string clientSecret, bool secureMode, string baseAddress = US_BASE_URL)
     {
         string authToken = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"));
 

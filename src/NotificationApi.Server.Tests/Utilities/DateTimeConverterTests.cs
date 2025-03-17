@@ -1,4 +1,4 @@
-﻿using NotificationApi.Server.Utilities;
+using NotificationApi.Server.Utilities;
 
 using System.Text.Json;
 

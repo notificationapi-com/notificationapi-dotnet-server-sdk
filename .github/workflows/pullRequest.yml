@@ -1,0 +1,30 @@
+name: .NET Pull Request Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pull_request_pipeline:
+    name: Pull Request Pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore src/NotificationApi.Server.sln
+      
+      - name: Build
+        run: dotnet build src/NotificationApi.Server.sln --configuration Release --no-restore
+      
+      - name: Test
+        run: dotnet test src/NotificationApi.Server.Tests --configuration Release --no-build --verbosity normal
+      
+      - name: Check code format
+        run: dotnet format src/NotificationApi.Server.sln --verify-no-changes --verbosity diagnostic 
